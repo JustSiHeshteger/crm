@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NamedQuery(name = "User.getAllUser",
         query = "select new com.crmsystem.wrapper.UserWrapper(u.id, u.name, u.email, u.contactNumber, u.status) " +
                 "from User u where u.role='user'")
+@NamedQuery(name = "User.updateStatus", query = "update User u set u.status=:status where u.id=:id")
 
 @Data
 @Entity
@@ -23,7 +24,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
