@@ -9,6 +9,7 @@ import com.crmsystem.model.User;
 import com.crmsystem.service.UserService;
 import com.crmsystem.utils.CrmUtils;
 import com.crmsystem.wrapper.UserWrapper;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -142,5 +143,46 @@ public class UserServiceImpl implements UserService {
         }
 
         return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.HTTP_VERSION_NOT_SUPPORTED);
+    }
+
+    @Override
+    public ResponseEntity<String> checkToken() {
+        return CrmUtils.getResponseEntity("true", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        try {
+            User user = userDao.findByEmail(jwtFilter.getCurrentUser());
+
+            if (!user.equals(null)) {
+                if (user.getPassword().equals(requestMap.get("oldPassword"))) {
+                    user.setPassword(requestMap.get("newPassword"));
+                    userDao.save(user);
+                    return CrmUtils.getResponseEntity("Password updated successfully.", HttpStatus.OK);
+                }
+                return CrmUtils.getResponseEntity("Incorrect old password.", HttpStatus.BAD_REQUEST);
+            }
+            return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.HTTP_VERSION_NOT_SUPPORTED);
+    }
+
+    @Override
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+        try {
+            User user = userDao.findByEmail(requestMap.get("email"));
+
+            //if (!Objects.isNull(user) && !Strings.isNullOrEmpty(user.getEmail()))
+            return CrmUtils.getResponseEntity("Check your mail for Credentials", HttpStatus.OK);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
