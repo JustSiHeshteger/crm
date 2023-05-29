@@ -12,6 +12,8 @@ import java.io.Serializable;
         query = "select new com.crmsystem.wrapper.UserWrapper(u.id, u.name, u.email, u.contactNumber, u.status) " +
                 "from User u where u.role='user'")
 @NamedQuery(name = "User.updateStatus", query = "update User u set u.status=:status where u.id=:id")
+@NamedQuery(name = "User.getAllAdmin",
+        query = "select u.email from User u where u.role='admin'")
 
 @Data
 @Entity
