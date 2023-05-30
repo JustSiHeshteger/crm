@@ -11,13 +11,17 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -179,5 +183,39 @@ public class BillServiceImpl implements BillService {
         }
 
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) {
+        log.info("Inside getPdf : requestMap {}", requestMap);
+        try {
+            byte[] bytes = new byte[0];
+            if (!requestMap.containsKey("uuid") && validateRequestMap(requestMap)) {
+                return new ResponseEntity<>(bytes, HttpStatus.BAD_REQUEST);
+            }
+
+            String filePath = CrmConstants.STORE_LOCATION+"\\"+(String) requestMap.get("uuid") + ".odf";
+            if (CrmUtils.isFileExist(filePath)) {
+                bytes = getByteArray(filePath);
+                return new ResponseEntity<>(bytes, HttpStatus.OK);
+            } else {
+                requestMap.put("isGenerate", false);
+                generateReport(requestMap);
+                bytes = getByteArray(filePath);
+                return new ResponseEntity<>(bytes, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return new ResponseEntity<>(new byte[0], HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private byte[] getByteArray(String filePath) throws Exception {
+        File file = new File(filePath);
+        InputStream stream = new FileInputStream(file);
+        byte[] bytes = IOUtils.toByteArray(stream);
+        stream.close();
+        return bytes;
     }
 }
