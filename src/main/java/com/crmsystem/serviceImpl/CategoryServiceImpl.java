@@ -91,9 +91,9 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             if (jwtFilter.isAdmin()) {
                 if (validateCategoryMap(requestMap, true)) {
-                    Optional optional = categoryDao.findById(Integer.parseInt(requestMap.get("id")));
+                    Optional<Category> optional = categoryDao.findById(Integer.parseInt(requestMap.get("id")));
 
-                    if (optional.isPresent()) {
+                    if (optional.isEmpty()) {
                         categoryDao.save(getCategoryFromMap(requestMap, true));
                         return CrmUtils.getResponseEntity("Category updated successfully.", HttpStatus.OK);
                     } else {
