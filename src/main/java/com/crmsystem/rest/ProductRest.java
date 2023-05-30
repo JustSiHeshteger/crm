@@ -26,5 +26,8 @@ public interface ProductRest {
     ResponseEntity<String> updateStatus(@RequestBody Map<String, String> requestMap);
 
     @GetMapping(path = "/getByCategory/{id}")
-    ResponseEntity<List<ProductWrapper>> getByCategory (@PathVariable Integer id);
+    ResponseEntity<List<ProductWrapper>> getByCategory(@PathVariable Integer id);
+
+    @GetMapping(path = "/getById/{id}")
+    ResponseEntity<ProductWrapper> getProductById(@PathVariable Integer id);
 }
