@@ -2,10 +2,7 @@ package com.crmsystem.rest;
 
 import com.crmsystem.wrapper.ProductWrapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +18,7 @@ public interface ProductRest {
 
     @PostMapping(path = "/update")
     ResponseEntity<String> updateProduct(@RequestBody Map<String, String> requestMap);
+
+    @PostMapping(path = "/delete/{id}")
+    ResponseEntity<String> deleteProduct(@PathVariable Integer id);
 }
