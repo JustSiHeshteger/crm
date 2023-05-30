@@ -72,9 +72,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<List<Category>> getAllCategory(String value) {
+    public ResponseEntity<List<Category>> getAllCategory(String filterValue) {
         try {
-            if (!Strings.isNullOrEmpty(value) && value.equalsIgnoreCase("true")) {
+            if (!Strings.isNullOrEmpty(filterValue) && filterValue.equalsIgnoreCase("true")) {
                 log.info("Inside if");
                 return new ResponseEntity<>(categoryDao.getAllCategory(), HttpStatus.OK);
             }
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
                 if (validateCategoryMap(requestMap, true)) {
                     Optional optional = categoryDao.findById(Integer.parseInt(requestMap.get("id")));
 
-                    if (!optional.isEmpty()) {
+                    if (optional.isPresent()) {
                         categoryDao.save(getCategoryFromMap(requestMap, true));
                         return CrmUtils.getResponseEntity("Category updated successfully.", HttpStatus.OK);
                     } else {
