@@ -55,4 +55,15 @@ public class BillRestImpl implements BillRest {
 
         return new ResponseEntity<>(new byte[0], HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<String> deleteBill(Integer id) {
+        try {
+            return billService.deleteBill(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

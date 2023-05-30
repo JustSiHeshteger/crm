@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -217,5 +218,22 @@ public class BillServiceImpl implements BillService {
         byte[] bytes = IOUtils.toByteArray(stream);
         stream.close();
         return bytes;
+    }
+
+    @Override
+    public ResponseEntity<String> deleteBill(Integer id) {
+        try {
+            Optional<Bill> optional = billDao.findById(id);
+            if (!optional.isEmpty()) {
+                billDao.deleteById(id);
+                return CrmUtils.getResponseEntity("Bill deleted successfully.", HttpStatus.OK);
+            }
+
+            return CrmUtils.getResponseEntity("Bill id doesn't exist.", HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
