@@ -67,4 +67,15 @@ public class ProductRestImpl implements ProductRest {
 
         return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @Override
+    public ResponseEntity<String> updateStatus(Map<String, String> requestMap) {
+        try {
+            return productService.updateStatus(requestMap);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return CrmUtils.getResponseEntity(CrmConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
