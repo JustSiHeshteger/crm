@@ -13,7 +13,7 @@ public interface ProductRest {
     @PostMapping(path = "/add")
     ResponseEntity<String> addNewProduct(@RequestBody Map<String, String> requestMap);
 
-    @GetMapping(path = "get")
+    @GetMapping(path = "/get")
     ResponseEntity<List<ProductWrapper>> getAllProduct();
 
     @PostMapping(path = "/update")

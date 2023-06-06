@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 
-@RequestMapping(path = "dashboard")
+@RequestMapping(path = "/dashboard")
 public interface DashboardRest {
 
     @GetMapping(path = "/details")
