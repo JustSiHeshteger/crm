@@ -133,7 +133,7 @@ export class ManageOrderComponent implements OnInit {
         id: formData.product.id,
         name: formData.product.name,
         quantity: formData.product.quantity,
-        prices: formData.product.price,
+        price: formData.product.price,
         total: formData.total.toString()
       });
       this.dataSource = [...this.dataSource];
@@ -156,7 +156,7 @@ export class ManageOrderComponent implements OnInit {
       email: formData.email,
       contactNumber: formData.contactNumber,
       paymentMethod: formData.paymentMethod,
-      totalAmount: formData.totalAmount.toString(),
+      totalAmount: formData.totalAmount,
       productDetails: JSON.stringify(this.dataSource)
     }
 

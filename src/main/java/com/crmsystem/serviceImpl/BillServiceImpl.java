@@ -22,10 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -96,11 +94,32 @@ public class BillServiceImpl implements BillService {
 
     private void addRows(PdfPTable table, Map<String, Object> data) {
         log.info("Inside addRows");
+        validateRows(data);
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            log.info(entry.getKey() + ": " + entry.getValue() + " " + entry.getValue().getClass());
+        }
         table.addCell((String) data.get("name"));
         table.addCell((String) data.get("category"));
         table.addCell((String) data.get("quantity"));
         table.addCell(Double.toString((Double) data.get("price")));
-        table.addCell(Double.toString((Double) data.get("total")));
+        table.addCell((String) data.get("total"));
+    }
+
+    private Map<String, Object>  validateRows(Map<String, Object> data) {
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value == null) {
+                if (key.equals("price")) {
+                    data.put(key, 0.0);
+                } else {
+                    data.put(key, "");
+                }
+            }
+        }
+
+        return data;
     }
 
     private void addTableHeader(PdfPTable table) {
@@ -170,8 +189,8 @@ public class BillServiceImpl implements BillService {
                 requestMap.containsKey("contactNumber") &&
                 requestMap.containsKey("email") &&
                 requestMap.containsKey("paymentMethod") &&
-                requestMap.containsKey("productDetails") &&
-                requestMap.containsKey("totalAmount");
+                requestMap.containsKey("productDetails");
+//        requestMap.containsKey("totalAmount");
     }
 
     @Override
@@ -195,7 +214,7 @@ public class BillServiceImpl implements BillService {
                 return new ResponseEntity<>(bytes, HttpStatus.BAD_REQUEST);
             }
 
-            String filePath = CrmConstants.STORE_LOCATION+"\\"+(String) requestMap.get("uuid") + ".odf";
+            String filePath = CrmConstants.STORE_LOCATION+"\\"+(String) requestMap.get("uuid") + ".pdf";
             if (CrmUtils.isFileExist(filePath)) {
                 bytes = getByteArray(filePath);
                 return new ResponseEntity<>(bytes, HttpStatus.OK);

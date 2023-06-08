@@ -27,7 +27,7 @@ export class BillService {
   }
 
   delete(id: any) {
-    return this.httpClient.get(this.url+"/bill/delete/"+id, {
+    return this.httpClient.post(this.url+"/bill/delete/"+id, {
       headers: new HttpHeaders().set('Content-Type', "application/json")
     });
   }
